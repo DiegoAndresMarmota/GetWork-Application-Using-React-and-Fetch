@@ -1,5 +1,5 @@
 import React from "react";
-import { useRef, useState } from "react";
+import { useRef, useEffect, useState } from "react";
 
 /* Se inicia función*/
 function Todolist() {
@@ -9,23 +9,69 @@ function Todolist() {
   /*Se crea un useState, para modificar cada nuevaTarea en setNuevaTarea*/
   const [nuevaTarea, setNuevaTarea] = useState([]);
 
-  /*Se crea un const agregarTarea*/
+  const [urlFetchAPI] = useState(
+    "http://assets.breatheco.de/apis/fake/todos/user/SussanHernandez"
+  );
+
+  useEffect(() => {
+    getNuevaTarea(urlFetchAPI);
+  }, [])
+
+  const getNuevaTarea = (url) => {
+    fetch(url)
+      .then((Response) => Response.json())
+      .then((data) => console.log(data))
+      .catch((error) => console.log(error));
+  }
+
+  const getUsuario = (url) => {
+    fetch(url, {
+      method: "POST",
+      body: JSON.stringify([]),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((Response) => Response.json())
+      .then((data) => console.log(data.result))
+      .catch((error) => console.log(error));
+  };
+
+  const actualizarTarea = (url, nuevaTarea) => {
+    fetch(url, {
+      method: "PUT",
+      body: JSON.stringify(nuevaTarea),
+      headers: {
+        "content-type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => console.log(data))
+      .catch((error) => console.log(error));
+  };
+
   const agregarTarea = (evento) => {
-    /*Si el evento(Enter) y el valor de la tareaPendiente no es igual a null */
     if (evento.keyCode === 13 && tareaPendiente.value !== "") {
-      /*...concadenar nuevaTarea al inicial (nulo) de la tarePendiente */
       setNuevaTarea(nuevaTarea.concat(tareaPendiente.value));
-      /*Mostrar valor de la TareaPendiente*/
       tareaPendiente.value = "";
     }
   };
 
-  /*Se crea un const borrarTarea*/
   const borrarTarea = (index) => {
-    /*Se agregan un nuevo elemento a nuevaTarea al indice*/
     nuevaTarea.splice(index, 1);
-    /*Este nuevo elemento, llamado setNuevaTarea, se agrega al array existente de nuevaTarea*/
     setNuevaTarea([...nuevaTarea]);
+  };
+
+  const borrarTodo = () => {
+    fetch(urlFetchAPI, {
+      method: "DELETE",
+      headers: {
+        "content-type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => console.log(data))
+      .catch((error) => console.log(error));
   };
 
   return (
@@ -75,6 +121,6 @@ function Todolist() {
       </div>
     </div>
   );
-}
+};
 
 export default Todolist;
