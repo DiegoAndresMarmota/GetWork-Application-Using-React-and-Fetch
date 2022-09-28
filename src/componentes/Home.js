@@ -1,16 +1,14 @@
 import React from "react";
 import { useRef, useEffect, useState } from "react";
 
-/* Se inicia función*/
 function Todolist() {
-  /*Se crea una variable tareaPendiente, con un valor persistente de tipo "Null*/
+
   let tareaPendiente = useRef(null);
 
-  /*Se crea un useState, para modificar cada nuevaTarea en setNuevaTarea*/
   const [nuevaTarea, setNuevaTarea] = useState([]);
 
   const [urlFetchAPI] = useState(
-    "http://assets.breatheco.de/apis/fake/todos/user/DiegoAndres"
+    "https://assets.breatheco.de/apis/fake/todos/user/SussanHernandez"
   );
 
   useEffect(() => {
@@ -18,13 +16,18 @@ function Todolist() {
   }, [])
 
   const getNuevaTarea = (url) => {
-    fetch(url)
-      .then((Response) => Response.json())
+    fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
       .then((data) => console.log(data))
       .catch((error) => console.log(error));
   }
 
-  const getUsuario = (url) => {
+  const agregarUsuario = (url) => {
     fetch(url, {
       method: "POST",
       body: JSON.stringify([]),
@@ -32,7 +35,7 @@ function Todolist() {
         "Content-Type": "application/json",
       },
     })
-      .then((Response) => Response.json())
+      .then((response) => response.json())
       .then((data) => console.log(data.result))
       .catch((error) => console.log(error));
   };
