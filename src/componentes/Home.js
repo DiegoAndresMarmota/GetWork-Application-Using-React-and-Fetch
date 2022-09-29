@@ -21,8 +21,6 @@ function Todolist() {
     setNuevaTarea([...nuevaTarea]);
   };
 
-  /*---------------------------------------------------------------------*/
-
   const url = "https://assets.breatheco.de/apis/fake/todos/user/omonroy";
   const config = {
     method: "GET",
@@ -36,15 +34,14 @@ function Todolist() {
   useEffect(() => {
     fetch(url, config)
       .then((response) => response.json())
-      .then((response) => console.log(response))
-      /*.then(data => setNuevaTarea(data))*/
+      .then((data) => console.log(data))
       .catch((error) => console.log(error));
   });
 
-  /*PUT
-  
+  /*PUT*/
+
   useEffect(() => {
-    if (nuevaTarea !== []) {
+    if (agregarTarea !== []) {
       fetch(url, {
         method: "PUT",
         body: JSON.stringify(nuevaTarea),
@@ -53,23 +50,20 @@ function Todolist() {
         },
       })
         .then((resp) => {
+          nuevaTarea.push(setNuevaTarea);
           console.log(resp.ok);
           console.log(resp.status);
-          console.log(resp.text());
-          return resp.json();
+          return resp.json(setNuevaTarea);
         })
-        .then(data => {
+        .then((data) => {
           console.log(data);
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
         });
     }
-  }, [nuevaTarea]);
-  
-  */
+  }, []);
 
-  /*----------------------------------------------------------------------*/
   return (
     <div className="container">
       <div className="card mt-4">
