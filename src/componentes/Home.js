@@ -1,58 +1,12 @@
 import React from "react";
-import { useRef, useEffect, useState } from "react";
+import { useRef, useState } from "react";
 
 function Todolist() {
-
+  /*Parametros iniciales*/
   let tareaPendiente = useRef(null);
-
   const [nuevaTarea, setNuevaTarea] = useState([]);
 
-  const [urlFetchAPI] = useState(
-    "https://assets.breatheco.de/apis/fake/todos/user/SussanHernandez"
-  );
-
-  useEffect(() => {
-    getNuevaTarea(urlFetchAPI);
-  }, [])
-
-  const getNuevaTarea = (url) => {
-    fetch(url, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => console.log(data))
-      .catch((error) => console.log(error));
-  }
-
-  const agregarUsuario = (url) => {
-    fetch(url, {
-      method: "POST",
-      body: JSON.stringify([]),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => console.log(data.result))
-      .catch((error) => console.log(error));
-  };
-
-  const actualizarTarea = (url, nuevaTarea) => {
-    fetch(url, {
-      method: "PUT",
-      body: JSON.stringify(nuevaTarea),
-      headers: {
-        "content-type": "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => console.log(data))
-      .catch((error) => console.log(error));
-  };
-
+  /*Primera instrucción: agregarTarea*/
   const agregarTarea = (evento) => {
     if (evento.keyCode === 13 && tareaPendiente.value !== "") {
       setNuevaTarea(nuevaTarea.concat(tareaPendiente.value));
@@ -60,23 +14,14 @@ function Todolist() {
     }
   };
 
+  /*Segunda instrucción: borrarTarea*/
   const borrarTarea = (index) => {
     nuevaTarea.splice(index, 1);
     setNuevaTarea([...nuevaTarea]);
   };
+  /*-----------------------------------------------------------------------------*/
 
-  const borrarTodo = () => {
-    fetch(urlFetchAPI, {
-      method: "DELETE",
-      headers: {
-        "content-type": "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => console.log(data))
-      .catch((error) => console.log(error));
-  };
-
+  /*-----------------------------------------------------------------------------*/
   return (
     <div className="container">
       <div className="card mt-4">
@@ -124,6 +69,6 @@ function Todolist() {
       </div>
     </div>
   );
-};
+}
 
 export default Todolist;
