@@ -35,14 +35,14 @@ function Todolist() {
 
   useEffect(() => {
     fetch(url, config)
-      .then(response => response.json())
-      .then(response => console.log(response))
+      .then((response) => response.json())
+      .then((response) => console.log(response))
       /*.then(data => setNuevaTarea(data))*/
-      .catch(error => console.log(error));
+      .catch((error) => console.log(error));
   });
 
-  /*PUT*/
-
+  /*PUT
+  
   useEffect(() => {
     if (nuevaTarea !== []) {
       fetch(url, {
@@ -66,6 +66,8 @@ function Todolist() {
         });
     }
   }, [nuevaTarea]);
+  
+  */
 
   /*----------------------------------------------------------------------*/
   return (
