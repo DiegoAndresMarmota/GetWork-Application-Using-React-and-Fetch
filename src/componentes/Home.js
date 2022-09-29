@@ -1,10 +1,10 @@
 import React from "react";
-import { useRef, useState } from "react";
+import { useRef, useEffect, useState } from "react";
 
 function Todolist() {
-
   /*Parametros iniciales*/
   let tareaPendiente = useRef(null);
+
   const [nuevaTarea, setNuevaTarea] = useState([]);
 
   /*Primera instrucción: agregarTarea*/
@@ -21,9 +21,53 @@ function Todolist() {
     setNuevaTarea([...nuevaTarea]);
   };
 
-/*-----------------------------------------------------------------------------*/
+  /*---------------------------------------------------------------------*/
 
-/*-----------------------------------------------------------------------------*/
+  const url = "https://assets.breatheco.de/apis/fake/todos/user/omonroy";
+  const config = {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+
+  /*GET*/
+
+  useEffect(() => {
+    fetch(url, config)
+      .then(response => response.json())
+      .then(response => console.log(response))
+      /*.then(data => setNuevaTarea(data))*/
+      .catch(error => console.log(error));
+  });
+
+  /*PUT*/
+
+  useEffect(() => {
+    if (nuevaTarea !== []) {
+      fetch(url, {
+        method: "PUT",
+        body: JSON.stringify(nuevaTarea),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((resp) => {
+          console.log(resp.ok);
+          console.log(resp.status);
+          console.log(resp.text());
+          return resp.json();
+        })
+        .then(data => {
+          console.log(data);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    }
+  }, [nuevaTarea]);
+
+  /*----------------------------------------------------------------------*/
   return (
     <div className="container">
       <div className="card mt-4">
