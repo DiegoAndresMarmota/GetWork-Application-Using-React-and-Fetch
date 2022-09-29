@@ -2,6 +2,7 @@ import React from "react";
 import { useRef, useState } from "react";
 
 function Todolist() {
+
   /*Parametros iniciales*/
   let tareaPendiente = useRef(null);
   const [nuevaTarea, setNuevaTarea] = useState([]);
@@ -19,9 +20,10 @@ function Todolist() {
     nuevaTarea.splice(index, 1);
     setNuevaTarea([...nuevaTarea]);
   };
-  /*-----------------------------------------------------------------------------*/
 
-  /*-----------------------------------------------------------------------------*/
+/*-----------------------------------------------------------------------------*/
+
+/*-----------------------------------------------------------------------------*/
   return (
     <div className="container">
       <div className="card mt-4">
