@@ -1,34 +1,112 @@
-import React, { useState } from "react";
-import TaskList from "./List.jsx";
-import Task from "./Task.jsx";
+import React from "react";
+import { useEffect, useRef, useState } from "react";
 
+function Todolist() {
+  let nombreRef = useRef(null);
+  const [task, setTask] = useState([]);
 
-const Home = () => {
+  const [urlApi] = useState(
+    "https://assets.breatheco.de/apis/fake/todos/user/alesanchezr"
+  );
 
-  const [taskList, setTaskList] = useState([]);
+  useEffect(() => {
+    getTask(urlApi);
+  }, []);
 
-
-  const newTask = (task) => {
-    setTaskList([task, ...taskList]);
+  const getTask = (url) => {
+    fetch(url)
+      .then((Response) => Response.json())
+      .then((data) => console.log(data))
+      .catch((error) => console.log(error));
   };
 
-  const del = (id) => {
-    const filterTask = taskList.filter((e, index) => index !== id);
-    setTaskList(filterTask);
+  const getUser = (url) => {
+    fetch(url, {
+      method: "POST",
+      body: JSON.stringify([]),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((Response) => Response.json())
+      .then((data) => console.log(data.result))
+      .catch((error) => console.log(error));
   };
 
+  const updateTask = (url, task) => {
+    fetch(url, {
+      method: "PUT",
+      body: JSON.stringify(task),
+      headers: {
+        "content-type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => console.log(data))
+      .catch((error) => console.log(error));
+  };
+
+  const addTask = (e) => {
+    if (e.keyCode === 13 && nombreRef.value !== "") {
+      setTask(task.concat(nombreRef.value));
+      nombreRef.value = "";
+    }
+  };
+
+  const deleteTask = (index) => {
+    task.splice(index, 1);
+    setTask([...task]);
+  };
+
+  const deleteAll = () => {
+    fetch(urlApi, {
+      method: "DELETE",
+      headers: {
+        "content-type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => console.log(data))
+      .catch((error) => console.log(error));
+  };
 
   return (
-    <div className="container-fluid">
-      <TaskList newTask={newTask} />
+    <div className="container">
+      <div className="card mt-4">
+        <div className="card-body">
+          <h1 className="card-title text-center">
+            To do list <i className="fas fa-tasks"></i>
+          </h1>
+          <ul className="list-group list-group-flush">
+            <div className="input-group mb-2 list-group list-group-flush">
+              <input
+                onKeyUp={addTask}
+                ref={(r) => (nombreRef = r)}
+                type="text"
+                id="input"
+                className="list-group-item"
+                placeholder="¿Qué necesito hacer?"
+              />
+            </div>
 
-      <div className="taskList">
-        {taskList.map((e, index) => (
-          <Task key={index} task={e} del={del} id={index} />
-        ))}
+            {!!task.length > 0 &&
+              task.map((valor, index) => {
+                return (
+                  <li className="list-group-item" key={index}>
+                    {valor}{" "}
+                    <i
+                      className="fas fa-trash float-right"
+                      id="eliminar"
+                      onClick={() => deleteTask(index)}
+                    ></i>
+                  </li>
+                );
+              })}
+          </ul>
+        </div>
+        <div className="card-footer text-muted">Pendientes por realizar: {task.length}</div>
       </div>
     </div>
   );
-};
-
-export default Home;
+}
+export default Todolist;
