@@ -59,13 +59,13 @@ function Home() {
   return (
     <div className="Main container">
       <Add nuevaTarea={nuevaTarea} />
-      <div className="Lista1">
+      <div className="Lista1 d-grid mt-2 gap-2">
         {listaTareas.map((e, index) => (
           <Erase key={index} list={e} borrar={borrar} id={index} />
         ))}
       </div>
       <div className="pendiente">
-        <h5 className="card-footer text-muted">
+        <h5 className="card-footer text-muted card-title text-center mt-4">
           Pendientes por realizar: {listaTareas.length}
         </h5>
       </div>
