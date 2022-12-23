@@ -1,112 +1,76 @@
-import React from "react";
-import { useEffect, useRef, useState } from "react";
+import React, { useState, useEffect } from "react";
+import Add from "./Add.jsx";
+import Erase from "./Erase.jsx";
 
-function Todolist() {
-  let nombreRef = useRef(null);
-  const [task, setTask] = useState([]);
-
-  const [urlApi] = useState(
-    "http://assets.breatheco.de/apis/fake/todos/user/DiegoAndresEchalar"
-  );
+function Home() {
+  const [listaTareas, setlistaTareas] = useState([]);
 
   useEffect(() => {
-    getTask(urlApi);
+    fetch("http://assets.breatheco.de/apis/fake/todos/user/DiegoAndresEchalar")
+      .then((response) => response.json())
+      .then((result) => setlistaTareas(result))
+      .catch((error) => console.log("error", error));
   }, []);
 
-  const getTask = (url) => {
-    fetch(url)
-      .then((Response) => Response.json())
-      .then((data) => console.log(data))
-      .catch((error) => console.log(error));
+  var requestOptions = {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify([...listaTareas]),
+    redirect: "follow",
   };
 
-  const getUser = (url) => {
-    fetch(url, {
-      method: "POST",
-      body: JSON.stringify([]),
+  fetch(
+    "http://assets.breatheco.de/apis/fake/todos/user/DiegoAndresEchalar",
+    requestOptions
+  )
+    .then((response) => response.json())
+    .then((result) => console.log(result))
+    .catch((error) => console.log("error", error));
+
+  const nuevaTarea = (actividad) => {
+    console.log(actividad);
+    setlistaTareas([actividad, ...listaTareas]);
+  };
+
+  const borrar = (id) => {
+    const listaFiltrada = listaTareas.filter((e, index) => index !== id);
+    setlistaTareas(listaFiltrada);
+
+    var requestOptions = {
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
-    })
-      .then((Response) => Response.json())
-      .then((data) => console.log(data.result))
-      .catch((error) => console.log(error));
-  };
+      body: JSON.stringify([...listaFiltrada]),
+      redirect: "follow",
+    };
 
-  const updateTask = (url, task) => {
-    fetch(url, {
-      method: "PUT",
-      body: JSON.stringify(task),
-      headers: {
-        "content-type": "application/json",
-      },
-    })
+    fetch(
+      "http://assets.breatheco.de/apis/fake/todos/user/DiegoAndresEchalar",
+      requestOptions
+    )
       .then((response) => response.json())
-      .then((data) => console.log(data))
-      .catch((error) => console.log(error));
-  };
-
-  const addTask = (e) => {
-    if (e.keyCode === 13 && nombreRef.value !== "") {
-      setTask(task.concat(nombreRef.value));
-      nombreRef.value = "";
-    }
-  };
-
-  const deleteTask = (index) => {
-    task.splice(index, 1);
-    setTask([...task]);
-  };
-
-  const deleteAll = () => {
-    fetch(urlApi, {
-      method: "DELETE",
-      headers: {
-        "content-type": "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => console.log(data))
-      .catch((error) => console.log(error));
+      .then((result) => console.log(result))
+      .catch((error) => console.log("error", error));
   };
 
   return (
-    <div className="container">
-      <div className="card mt-4">
-        <div className="card-body">
-          <h1 className="card-title text-center">
-            To do list <i className="fas fa-tasks"></i>
-          </h1>
-          <ul className="list-group list-group-flush">
-            <div className="input-group mb-2 list-group list-group-flush">
-              <input
-                onKeyUp={addTask}
-                ref={(r) => (nombreRef = r)}
-                type="text"
-                id="input"
-                className="list-group-item"
-                placeholder="¿Qué necesito hacer?"
-              />
-            </div>
-
-            {!!task.length > 0 &&
-              task.map((valor, index) => {
-                return (
-                  <li className="list-group-item" key={index}>
-                    {valor}{" "}
-                    <i
-                      className="fas fa-trash float-right"
-                      id="eliminar"
-                      onClick={() => deleteTask(index)}
-                    ></i>
-                  </li>
-                );
-              })}
-          </ul>
-        </div>
-        <div className="card-footer text-muted">Pendientes por realizar: {task.length}</div>
+    <div className="Main container">
+      <Add nuevaTarea={nuevaTarea} />
+      <div className="Lista1">
+        {listaTareas.map((e, index) => (
+          <Erase key={index} list={e} borrar={borrar} id={index} />
+        ))}
+      </div>
+      <div className="pendiente">
+        <h5 className="card-footer text-muted">
+          Pendientes por realizar: {listaTareas.length}
+        </h5>
       </div>
     </div>
   );
 }
-export default Todolist;
+
+export default Home;
